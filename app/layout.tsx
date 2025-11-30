@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PrintWaves",
+  title: "Bradley Saint",
   description: "Create your style",
 };
 

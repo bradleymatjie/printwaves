@@ -121,7 +121,7 @@ export default function DesignStudio() {
       <header className="bg-black text-white px-4 sm:px-6 py-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <a href="#" className="text-xl sm:text-2xl font-black">PrintWaves</a>
+            <a href="#" className="text-xl sm:text-2xl font-black"></a>
             <span className="text-xs sm:text-sm text-gray-400">Design Studio</span>
           </div>
           <div className="flex gap-2 sm:gap-4">
