@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bradley Saint",
+  title: "The Village - StreetWear",
   description: "Create your style",
 };
 
