@@ -98,7 +98,6 @@ export default function DesignStudio() {
 
   const currentElements = useMemo(() => elements[view], [elements, view]);
 
-  // Sorted elements by zIndex descending (higher z on top)
   const sortedElements = useMemo(() => [...currentElements].sort((a, b) => b.zIndex - a.zIndex), [currentElements]);
 
   const getSelectedElementType = () => {
@@ -114,7 +113,6 @@ export default function DesignStudio() {
     return currentElements.find(el => el.id === selectedElement);
   }, [selectedElement, currentElements]);
 
-  // Sync states when selecting an element
   useEffect(() => {
     if (elementType === 'text' && selectedElementData) {
       const el = selectedElementData as TextElement;
@@ -135,13 +133,10 @@ export default function DesignStudio() {
     }
   }, [selectedElement, elementType, selectedElementData]);
 
-  // Handle view change
   useEffect(() => {
-    // Clear selection when switching views
     setSelectedElement(null);
   }, [view]);
 
-  // Layer drag and drop handlers
   const handleLayerDragStart = useCallback((e: React.DragEvent, id: number) => {
     setDraggedElementId(id);
     e.dataTransfer.effectAllowed = 'move';
@@ -178,7 +173,6 @@ export default function DesignStudio() {
     setDraggedElementId(null);
   }, [draggedElementId, view]);
 
-  // Drag handlers for moving elements
   const handleMouseDown = useCallback((e: React.MouseEvent, id: number, type: 'text' | 'image') => {
     e.preventDefault();
     e.stopPropagation();
@@ -226,7 +220,6 @@ export default function DesignStudio() {
     dragRef.current = null;
   }, [handleMouseMove]);
 
-  // Resize handlers
   const handleResizeStart = useCallback((e: React.MouseEvent, anchor: 'nw' | 'ne' | 'sw' | 'se') => {
     e.preventDefault();
     e.stopPropagation();
@@ -267,7 +260,6 @@ export default function DesignStudio() {
     newHeight = Math.max(20, Math.min(newHeight, designHeight * 2));
     let newX = resizeStart.elementX;
     let newY = resizeStart.elementY;
-    // Adjust position based on anchor
     if (resizeAnchor.includes('w')) newX += (deltaX / designWidth * 100);
     if (resizeAnchor.includes('n')) newY += (deltaY / designHeight * 100);
     newX = Math.max(0, Math.min(100, newX));
@@ -288,7 +280,6 @@ export default function DesignStudio() {
     document.removeEventListener('mouseup', handleResizeEnd);
   }, []);
 
-  // Touch handlers for mobile
   const handleTouchStart = useCallback((e: React.TouchEvent, id: number, type: 'text' | 'image') => {
     const touch = e.touches[0];
     const mouseEvent = new MouseEvent('mousedown', {
@@ -442,7 +433,6 @@ export default function DesignStudio() {
       const designTop = tshirtY + tshirtHeight * 0.25;
       const designWidth = tshirtWidth * 0.7;
       const designHeight = tshirtHeight * 0.45;
-      // Draw sorted elements (higher zIndex first)
       for (const el of sortedElements) {
         if (el.type === 'image') {
           const designImg = new Image();
@@ -451,9 +441,13 @@ export default function DesignStudio() {
             designImg.onload = () => resolve(true);
             designImg.onerror = reject;
           });
-          const imgX = designLeft + (designWidth * (el.x / 100)) - (el.width / 2);
-          const imgY = designTop + (designHeight * (el.y / 100)) - (el.height / 2);
-          ctx.drawImage(designImg, imgX, imgY, el.width * 2, el.height * 2);
+          const centerX = designLeft + (designWidth * (el.x / 100));
+          const centerY = designTop + (designHeight * (el.y / 100));
+          const scaledWidth = el.width * 2;
+          const scaledHeight = el.height * 2;
+          const imgX = centerX - (scaledWidth / 2);
+          const imgY = centerY - (scaledHeight / 2);
+          ctx.drawImage(designImg, imgX, imgY, scaledWidth, scaledHeight);
         } else {
           const textEl = el as TextElement;
           const fontWeight = textEl.bold ? 'bold' : 'normal';
@@ -467,7 +461,6 @@ export default function DesignStudio() {
         }
       }
     } else {
-      // Fallback
       ctx.fillStyle = currentTshirtColor?.hex || '#FFFFFF';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       const designLeft = canvas.width * 0.15;
@@ -482,9 +475,13 @@ export default function DesignStudio() {
             designImg.onload = () => resolve(true);
             designImg.onerror = reject;
           });
-          const imgX = designLeft + (designWidth * (el.x / 100)) - (el.width / 2);
-          const imgY = designTop + (designHeight * (el.y / 100)) - (el.height / 2);
-          ctx.drawImage(designImg, imgX, imgY, el.width * 2, el.height * 2);
+          const centerX = designLeft + (designWidth * (el.x / 100));
+          const centerY = designTop + (designHeight * (el.y / 100));
+          const scaledWidth = el.width * 2;
+          const scaledHeight = el.height * 2;
+          const imgX = centerX - (scaledWidth / 2);
+          const imgY = centerY - (scaledHeight / 2);
+          ctx.drawImage(designImg, imgX, imgY, scaledWidth, scaledHeight);
         } else {
           const textEl = el as TextElement;
           const fontWeight = textEl.bold ? 'bold' : 'normal';
@@ -505,7 +502,6 @@ export default function DesignStudio() {
     link.click();
   };
 
-  // Real-time text updates
   const handleTextChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newText = e.target.value;
     setCurrentText(newText);
@@ -562,7 +558,6 @@ export default function DesignStudio() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      {/* Header */}
       <header className="bg-black text-white px-4 sm:px-6 py-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
@@ -580,10 +575,8 @@ export default function DesignStudio() {
         </div>
       </header>
       <div className="flex-1 flex flex-col lg:flex-row">
-        {/* Left Sidebar - Tools */}
         <div className="w-full lg:w-64 bg-white border-b lg:border-r border-gray-200 p-4 overflow-y-auto">
           <h2 className="text-lg font-black mb-4">DESIGN TOOLS</h2>
-          {/* Tool Selection */}
           <div className="space-y-2 mb-6">
             <button
               onClick={() => setSelectedTool('upload')}
@@ -613,7 +606,6 @@ export default function DesignStudio() {
               <span className="font-bold text-sm">T-Shirt Color</span>
             </button>
           </div>
-          {/* Tool Options */}
           <div className="border-t border-gray-200 pt-4">
             {selectedTool === 'upload' && (
               <div className="space-y-4">
@@ -652,7 +644,6 @@ export default function DesignStudio() {
                     </div>
                   </div>
                 )}
-                {/* Edit Selected Image Size */}
                 {elementType === 'image' && selectedElement && (
                   <div className="mt-4 pt-4 border-t border-gray-200">
                     <h4 className="text-xs font-bold mb-2">Edit Selected Image</h4>
@@ -808,10 +799,8 @@ export default function DesignStudio() {
             )}
           </div>
         </div>
-        {/* Center - Canvas */}
         <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 bg-gray-100 relative" ref={canvasRef}>
           <div className="bg-white rounded-lg shadow-xl p-4 sm:p-8 max-w-2xl w-full">
-            {/* View Toggle Button */}
             <div className="flex justify-center mb-4">
               <button
                 onClick={() => setView(view === 'front' ? 'back' : 'front')}
@@ -822,7 +811,6 @@ export default function DesignStudio() {
               </button>
             </div>
             <div className="relative w-full aspect-[3/4] mx-auto" style={{ maxWidth: '400px' }}>
-              {/* T-Shirt Shape */}
               <div
                 className="absolute inset-0 rounded-lg shadow-inner z-0"
                 style={{
@@ -832,14 +820,12 @@ export default function DesignStudio() {
                   backgroundRepeat: 'no-repeat'
                 }}
               >
-                {/* Design Area */}
                 <div 
                   ref={designAreaRef}
                   className="h-full border-2 border-dashed border-gray-300 relative z-10"
                   onTouchMove={handleTouchMove}
                   onTouchEnd={handleTouchEnd}
                 >
-                  {/* Render sorted elements */}
                   {sortedElements.map((element) => (
                     <div
                       key={`${element.type}-${element.id}`}
@@ -866,7 +852,6 @@ export default function DesignStudio() {
                             className="select-none pointer-events-none"
                             draggable={false}
                           />
-                          {/* Resize Handles - only for selected image */}
                           {selectedElement === element.id && (
                             <>
                               <div
@@ -936,7 +921,6 @@ export default function DesignStudio() {
             </div>
           </div>
         </div>
-        {/* Right Sidebar - Layers */}
         <div className="w-full lg:w-64 bg-white border-t lg:border-l border-gray-200 p-4 overflow-y-auto">
           <h2 className="text-lg font-black mb-4">LAYERS ({view.toUpperCase()})</h2>
           <p className="text-xs text-gray-500 mb-2">Drag to reorder (top = above)</p>
@@ -948,7 +932,6 @@ export default function DesignStudio() {
               className="space-y-2"
               onDragOver={handleLayerDragOver}
             >
-              {/* Render layers in reverse zIndex order (top first) */}
               {sortedElements.map((element, index) => (
                 <div
                   key={`layer-${element.id}`}
