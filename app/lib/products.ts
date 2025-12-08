@@ -1,24 +1,5 @@
 import { Product } from "./types";
 
-// --- UPDATED Product INTERFACE (Must match the one in your client component) ---
-// Note: Ensure this 'types.ts' file contains the full interface definition.
-// I'm including the full definition here for context:
-/* export interface Product {
-    id: string;
-    slug: string;
-    name: string;
-    price: string;
-    category?: string;
-    soldOut?: boolean;
-    imageUrl: string;
-    description?: string;
-    availableSizes: string[];
-    availableMaterials: string[];
-}
-*/
-// -----------------------------------------------------------------------------
-
-// Define common options for easier maintenance
 const defaultTeeSizes = ['XS', 'S', 'M', 'L', 'XL'];
 const defaultHoodieSizes = ['S', 'M', 'L', 'XL', 'XXL'];
 const defaultMaterials = ['100% Cotton'];

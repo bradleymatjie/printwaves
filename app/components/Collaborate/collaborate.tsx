@@ -3,39 +3,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronRight } from 'lucide-react';
-import { CollaborationItem } from '@/app/lib/types';
+import mockProducts from '@/app/lib/products';
 
 export default function Collaboration() {
-  const collaborationItems: CollaborationItem[] = [
-    {
-      slug: 'custom-tee',
-      name: 'CUSTOM TEE',
-      price: 'R427.42',
-      soldOut: false,
-      imageUrl: '/Bradley-Saint.png',
-    },
-    {
-      slug: 'designer-long-sleeve',
-      name: 'DESIGNER LONG SLEEVE',
-      price: 'R598.46',
-      soldOut: false,
-      imageUrl: 'https://velocityrecords.com/cdn/shop/products/shirt_front_1080x.jpg?v=1621977506',
-    },
-    {
-      slug: 'premium-print-tee',
-      name: 'PREMIUM PRINT TEE',
-      price: 'R512.94',
-      soldOut: false,
-      imageUrl: 'https://images.unsplash.com/photo-1613480838954-10d9f4de0128?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-      slug: 'classic-hoodie',
-      name: 'CLASSIC HOODIE',
-      price: 'R855.01',
-      soldOut: false,
-      imageUrl: 'https://printify.com/wp-content/uploads/2023/03/Choose-the-Right-Printing-Method-Direct-to-Garment.png',
-    },
-  ];
 
   return (
     <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 bg-black text-white">
@@ -47,8 +17,8 @@ export default function Collaboration() {
           </Link>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-          {collaborationItems.map((item) => (
-            <Link key={item.slug} href={`/products/${item.slug}`} className="group block">
+          {mockProducts.slice(0,4).map((item) => (
+            <Link key={item.slug} href={`/products/${item.id}`} className="group block">
               <div className={`relative overflow-hidden rounded-md border border-white/20 hover:border-white/50 transition-colors ${item.soldOut ? 'opacity-50' : ''}`}>
                 <div className="aspect-square relative">
                   <Image
